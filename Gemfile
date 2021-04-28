@@ -5,6 +5,7 @@ ruby '3.0.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3', '>= 6.1.3.1'
+gem 'bcrypt'
 gem 'bootstrap-sass'
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
@@ -24,6 +25,7 @@ gem 'jbuilder', '~> 2.7'
 # gem 'image_processing', '~> 1.2'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'rubocop', require: false
+gem 'rubocop-minitest', require: false
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
