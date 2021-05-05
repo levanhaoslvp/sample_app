@@ -1,41 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title><%= full_title(yield(:title)) %></title>
-<meta charset="utf-8">
-<%= csrf_meta_tags %>
-<%= csp_meta_tag %>
-<%= stylesheet_link_tag 'application', media: 'all',
-'data-turbolinkstrack': 'reload' %>
-<%= javascript_pack_tag 'application', 'data-turbolinkstrack': 'reload' %>
-<!--[if lt IE 9]>
-<script
-src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.j
-s">
-</script>
-<![endif]-->
-</head>
-<body>
-<header class="navbar navbar-fixed-top navbar-inverse">
-<div class="container">
-<%= link_to "sample app", '#', id: "logo" %>
-<nav>
-<ul class="nav navbar-nav navbar-right">
-<li><%= link_to "Home", home_path %></li>
-<li><%= link_to "Help", helf_path %></li>
-<li><%= link_to "Log in", '#' %></li>
-</ul>
-</nav>
-</div>
-</header>
-<div class="container">
-    <% flash.each do |message_type, message| %>
-        <%= content_tag(:div, message, class: "alert alert-#
-{message_type}") %>
-    <% end %>
-    <%= yield %>
-    <%= render 'layouts/footer' %>
-    <%= debug(params) if Rails.env.development? %>
-</div>
-</body>
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initialscale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", media: "all",
+                                           'data-turbolinkstrack': "reload" %>
+    <%= javascript_pack_tag "application", 'data-turbolinkstrack': "reload" %>
+    <%= render "layouts/shim" %>
+  </head>
+  <body>
+    <%= render "layouts/header" %>
+    <div class="container">
+      <% flash.each do |message_type, message| %>
+        <%= content_tag(:div, message, class: "alert alert-#)
+                                                                                                                                                            {message_type}") %>
+      <% end %>
+      <%= yield %>
+      <%= render "layouts/footer" %>
+      <%= debug(params) if Rails.env.development? %>
+    </div>
+  </body>
 </html>
