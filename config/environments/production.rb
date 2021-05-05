@@ -1,9 +1,4 @@
 # frozen_string_literal: true
-<<<<<<< HEAD
-
-require 'active_support/core_ext/integer/time'
-=======
->>>>>>> basic-login
 
 require 'active_support/core_ext/integer/time'
 # require
