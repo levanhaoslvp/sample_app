@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+<<<<<<< HEAD
+=======
+# app/helpers application_helper.rb
+>>>>>>> basic-login
 module ApplicationHelper
   def full_title(page_title = '')
     base_title = 'Ruby on Rails Tutorial Sample App'

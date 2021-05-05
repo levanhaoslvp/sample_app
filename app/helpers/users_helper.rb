@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+<<<<<<< HEAD
+=======
+# app/helper/users_helper.rb
+>>>>>>> basic-login
 module UsersHelper
   # Returns the Gravatar for the given user.
   def gravatar_for(user, options = { size: 80 })
