@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   delete  '/login',     to: 'session#destroy'
   get 'sessions/new'
   resources :users
+  resources :account_activations, only: [:edit]
 end
