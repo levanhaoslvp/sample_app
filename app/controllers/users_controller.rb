@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @microposts = @user.microposts.paginate(page: params[:page])
-    redirect_to root_url and return unless FILL_IN
+    redirect_to root_url # and return unless
   end
 
   def new
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params_new) # Not the final implementation!
     if @user.save
-      l @user.send_activation_email
+      # @user.send_activation_email
       flash[:info] = 'Please check your email to activate your account.'
       redirect_to root_url
     else

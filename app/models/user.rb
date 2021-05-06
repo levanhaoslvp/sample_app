@@ -46,9 +46,17 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, nil)
   end
 
+  # Defines a proto-feed.
+  # See "Following users" for the full implementation.
+  def feed
+    Micropost.where('user_id = ?', id)
+  end
+
   # Activates an account
   def activate
-    update_columns(activated: FILL_IN, activated_at: FILL_IN)
+    # update_columns(activated: , activated_at: )
+    update_attribute(:activated, true)
+    update_attribute(:activated_at, Time.zone.now)
   end
 
   # Sends activation email.
