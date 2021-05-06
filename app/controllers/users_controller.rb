@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   before_action :correct_user, only: %i[edit update]
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
     redirect_to root_url and return unless FILL_IN
   end
 

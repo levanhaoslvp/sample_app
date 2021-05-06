@@ -3,6 +3,7 @@
 # app/models/user.rb
 class User < ApplicationRecord
   # frozen_string_literal: true
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token
 
   before_save :downcase_email

@@ -3,7 +3,9 @@
 # app/controllers/static_p_age.rb
 
 class StaticPAgeController < ApplicationController
-  def home; end
+  def home
+    @micropost = current_user.microposts.build if logged_in?
+  end
 
   def help; end
 
