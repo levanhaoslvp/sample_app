@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddActivationToUser < ActiveRecord::Migration[6.1]
   def change
     add_column :users, :activation_digest, :string

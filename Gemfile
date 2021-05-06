@@ -6,16 +6,16 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.0.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'active_storage_validations'
 gem 'bcrypt'
-gem 'faker'
-gem 'will_paginate'
-gem 'bootstrap-will_paginate'
 gem 'bootstrap-sass'
-gem 'puma', '~> 5.0'
-gem 'rails', '~> 6.1.3', '>= 6.1.3.1'
+gem 'bootstrap-will_paginate'
+gem 'faker'
 gem 'image_processing'
 gem 'mini_magick'
-gem 'active_storage_validations'
+gem 'puma', '~> 5.0'
+gem 'rails', '~> 6.1.3', '>= 6.1.3.1'
+gem 'will_paginate'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -70,8 +70,8 @@ group :test do
 end
 
 group :production do
-  gem 'pg', '1.2.3'
   gem 'aws-sdk-s3', '1.46.0', require: false
+  gem 'pg', '1.2.3'
 end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
