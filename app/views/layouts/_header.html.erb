@@ -7,20 +7,13 @@
         <li><%= link_to "Help", helf_path %></li>
         <% if logged_in? %>
           <li><%= link_to "Users", users_path %></li>
-          <li class="dropdown">
-          <a href="#" class="dropdown-toggle" datatoggle="dropdown">Account <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><%= link_to "Profile", current_user %></li>
-              <li><%= link_to "Settings", "#" %></li>
-              <li class="divider"></li>
-              <li>
-                  <%= link_to "Log out", login_path, method: "delete" %>
-              </li>
-            </ul>
-          </li>
+          <li><%= link_to "Profile", current_user %></li>
           <li><%= link_to "Settings", edit_user_path(current_user) %></li>
+          <% if current_user.uid? %>
+            <li class="nav-item">  signed in as: <%= current_user.name %> - <%= image_tag(session[:avatar_url], width: "50", heigth: "50", class: "img-circle") %></li>
+          <% end %>
           <li>
-            <%= link_to "Log out", login_path, method: "delete" %>
+            <%= link_to "Log out", logout_path, method: :delete %>
           </li>
         <% else %>
           <li><%= link_to "Log in", login_path %></li>
