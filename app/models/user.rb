@@ -4,13 +4,21 @@
 class User < ApplicationRecord
   # frozen_string_literal: true
   has_many :microposts, dependent: :destroy
+  has_many :active_relationships, class_name: 'Relationship',
+                                  foreign_key: 'follower_id',
+                                  dependent: :destroy
+  has_many :passive_relationships, class_name: 'Relationship',
+                                   foreign_key: 'followed_id',
+                                   dependent: :destroy
+  has_many :following, through: :active_relationships, source: :followed
+
+  has_many :followers, through: :passive_relationships, source: :follower
   attr_accessor :remember_token, :activation_token
 
-  before_save :downcase_email
   before_create :create_activation_digest
-
-  validates :name, presence: true, length: { minimum: 1, maximum: 50 }
   before_save { self.email = email.downcase }
+  validates :name, presence: true, length: { minimum: 1, maximum: 50 }
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true,
                     length: { minimum: 5, maximum: 50 },
@@ -22,6 +30,25 @@ class User < ApplicationRecord
   def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
+  end
+
+  # for login with facebook,google,..
+  def self.sign_in_from_omniauth(temp_auth)
+    User.find_by(provider: temp_auth['provider'], uid: temp_auth['uid']) || create_user_from_omniauth(temp_auth)
+  end
+
+  # create user
+  def self.create_user_from_omniauth(temp_auth)
+    random_pass = SecureRandom.hex(8)
+    random_string = (0...4).map { rand(65..90).chr }.join
+    User.create(
+      provider: temp_auth['provider'],
+      uid: temp_auth['uid'],
+      name: temp_auth['info']['name'] || "Guest#{random_string.to_s.downcase}",
+      email: random_string.to_s.downcase + temp_auth['info']['email'].to_s,
+      password: random_pass.to_s + random_string.to_s.downcase,
+      password_digest: random_pass.to_s + random_string.to_s.downcase
+    )
   end
 
   # Returns a random token.
@@ -36,10 +63,11 @@ class User < ApplicationRecord
   end
 
   # Returns true if the given token matches the digest.
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
 
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   def forget
@@ -49,12 +77,29 @@ class User < ApplicationRecord
   # Defines a proto-feed.
   # See "Following users" for the full implementation.
   def feed
-    Micropost.where('user_id = ?', id)
+    part_of_feed = 'relationships.follower_id = :id or microposts.user_id = :id'
+    Micropost.joins(user: :followers).where(part_of_feed, { id:
+    id })
+  end
+
+  # Follows a user.
+  def follow(other_user)
+    following << other_user
+  end
+
+  # Unfollows a user.
+  def unfollow(other_user)
+    following.delete(other_user)
+  end
+
+  # Returns true if the current user is following the other=user.
+  def following?(other_user)
+    following.include?(other_user)
   end
 
   # Activates an account
   def activate
-    # update_columns(activated: , activated_at: )
+    # update_columns(activated: FILL_IN, activated_at: FILL_IN)
     update_attribute(:activated, true)
     update_attribute(:activated_at, Time.zone.now)
   end

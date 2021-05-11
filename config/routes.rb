@@ -10,9 +10,14 @@ Rails.application.routes.draw do
   get     '/signup',    to: 'users#new'
   get     '/login',     to: 'session#new'
   post    '/login',     to: 'session#create'
-  delete  '/login',     to: 'session#destroy'
-  get 'sessions/new'
-  resources :users
+  delete  '/logout',    to: 'session#destroy'
+  get 'auth/:provider/callback', to: 'session#create'
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
   resources :account_activations, only: [:edit]
   resources :microposts, only: %i[create destroy]
+  resources :relationships, only: %i[create destroy]
 end
