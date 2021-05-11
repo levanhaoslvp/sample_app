@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token
 
-  before_save :downcase_email
+  before_save { self.email = email.downcase }
   before_create :create_activation_digest
 
   validates :name, presence: true, length: { minimum: 1, maximum: 50 }
@@ -22,6 +22,25 @@ class User < ApplicationRecord
   def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
+  end
+
+  # for login with facebook,google,..
+  def self.sign_in_from_omniauth(temp_auth)
+    User.find_by(provider: temp_auth['provider'], uid: temp_auth['uid']) || create_user_from_omniauth(temp_auth)
+  end
+
+  # create user
+  def self.create_user_from_omniauth(temp_auth)
+    random_pass = SecureRandom.hex(8)
+    random_string = (0...4).map { rand(65..90).chr }.join
+    User.create(
+      provider: temp_auth['provider'],
+      uid: temp_auth['uid'],
+      name: temp_auth['info']['name'] || "Guest#{random_string.to_s.downcase}",
+      email: random_string.to_s.downcase + temp_auth['info']['email'].to_s,
+      password: random_pass.to_s + random_string.to_s.downcase,
+      password_digest: random_pass.to_s + random_string.to_s.downcase
+    )
   end
 
   # Returns a random token.

@@ -5,6 +5,14 @@ module SessionHelper
     session[:user_id] = user.id
   end
 
+  def log_in_auth(auth)
+    session[:omniauth] = auth.except('extra')
+    temp_auth = auth.except('extra')
+    user = User.sign_in_from_omniauth(temp_auth)
+    session[:user_id] = user['id']
+    session[:avatar_url] = temp_auth['info']['image']
+  end
+
   # Remembers a user in a persistent session.
   def remember(user)
     user.remember
@@ -18,7 +26,7 @@ module SessionHelper
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.encrypted[:user_id])
       user = User.find_by(id: user_id)
-      if user&.authenticated?(cookies[:remember_token])
+      if user&.authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user
       end
@@ -43,6 +51,8 @@ module SessionHelper
 
   def log_out
     forget(current_user)
+    session.delete(:avatar_url)
+    session.delete(:omniauth)
     session.delete(:user_id)
     @current_user = nil
   end
