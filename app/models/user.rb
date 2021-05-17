@@ -1,79 +1,29 @@
 # frozen_string_literal: true
 
-# app/models/user.rb
 class User < ApplicationRecord
-  # frozen_string_literal: true
-  has_many :microposts, dependent: :destroy
-  attr_accessor :remember_token, :activation_token
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable, :validatable,
+         :recoverable, :rememberable, :omniauthable,
+         :confirmable, omniauth_providers: %i[google_oauth2 facebook]
 
-  before_save :downcase_email
-  before_create :create_activation_digest
-
-  validates :name, presence: true, length: { minimum: 1, maximum: 50 }
-  before_save { self.email = email.downcase }
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :email, presence: true,
-                    length: { minimum: 5, maximum: 50 },
-                    format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: true
-  has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
-  # Returns the hash digest of the given string.
-  def self.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
+  def self.new_with_session(params, session)
+    super.tap do |user|
+      if data == session['devise.facebook_data'] &&
+         session['devise.facebook_data']['extra']['raw_info'] && user.email.blank?
+        user.email = data['email']
+      end
+    end
   end
 
-  # Returns a random token.
-  def self.new_token
-    SecureRandom.urlsafe_base64
-  end
-
-  # Remembers a user in the database for use in persistent sessions.
-  def remember
-    self.remember_token = User.new_token
-    update_attribute(:remember_digest, User.digest(remember_token))
-  end
-
-  # Returns true if the given token matches the digest.
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
-
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
-  end
-
-  def forget
-    update_attribute(:remember_digest, nil)
-  end
-
-  # Defines a proto-feed.
-  # See "Following users" for the full implementation.
-  def feed
-    Micropost.where('user_id = ?', id)
-  end
-
-  # Activates an account
-  def activate
-    # update_columns(activated: , activated_at: )
-    update_attribute(:activated, true)
-    update_attribute(:activated_at, Time.zone.now)
-  end
-
-  # Sends activation email.
-  def send_activation_email
-    UserMailer.account_activation(self).deliver_now
-  end
-
-  private
-
-  # Converts email to all lower-case.
-  def downcase_email
-    self.email = email.downcase
-  end
-
-  # Creates and assigns the activation token and digest.
-  def create_activation_digest
-    self.activation_token = User.new_token
-    self.activation_digest = User.digest(activation_token)
+  def self.from_omniauth(auth)
+    puts " this is   #{auth.info} + this is #{auth.info.name}"
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.provider + auth.info.email
+      user.name = auth.info.name
+      user.password = Devise.friendly_token[0, 20]
+      user.uid = auth.uid
+      user.skip_confirmation!
+    end
   end
 end
