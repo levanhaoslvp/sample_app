@@ -9,4 +9,12 @@ module ApplicationHelper
       "#{page_title} | #{base_title}"
     end
   end
+
+  def gravatar_for(user, options = { size: 80 })
+    size = options[:size]
+    gravatar_id = Digest::MD5.hexdigest(user.email.downcase)
+    auth_avatar = current_user.providers.find_by(provider: session['provider']).avatar
+    gravatar_url = auth_avatar || "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
+    image_tag(gravatar_url, alt: user.name, class: 'gravatar')
+  end
 end
