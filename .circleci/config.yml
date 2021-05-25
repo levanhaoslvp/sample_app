@@ -6,11 +6,10 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/ruby:3.0.1-stretch-node
-      auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD 
-    executor: ruby/default
+      - image: cimg/ruby:3.0.1-node
+        auth:
+         username: mydockerhub-user
+         password: $DOCKERHUB_PASSWORD 
     steps:
       - checkout
       - ruby/install-deps
