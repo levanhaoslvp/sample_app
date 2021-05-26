@@ -36,9 +36,6 @@ jobs:
           BUNDLER_VERSION: 2.2.16
           RAILS_ENV: test
           DB_HOST: 127.0.0.1
-          DB_USERNAME: 'root'
-          DB_PASSWORD: 'Hao@0869'
-
       - image: circleci/mysql:8.0.2
         environment:
           MYSQL_DATABASE: 'sample_app_test'
@@ -55,6 +52,9 @@ jobs:
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run:
+          name: Database create
+          command: bundle exec rails db:create
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace
