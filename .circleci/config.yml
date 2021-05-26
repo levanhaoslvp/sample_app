@@ -25,7 +25,7 @@ jobs:
       - ruby/install-deps
       - run:
           name: Rubocop
-          command: rubocop -A
+          command: bundle exec rubocop -A
 
   test:  
     parallelism: 3
