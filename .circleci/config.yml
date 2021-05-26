@@ -16,12 +16,6 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
           cache-key: "yarn.lock"
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: Setup DB
-          command: bundle exec rails db:create db:schema:load --trace
 
   checking:
     docker:
@@ -31,39 +25,43 @@ jobs:
       - ruby/install-deps
       - run:
           name: Rubocop
-          command: bundle exec rubocop
+          command: |
+            bundle exec rubocop
+            rubocop -A
 
-  test:
+  test:  
+    parallelism: 3
     docker:
-      - image: circleci/ruby:3.0.1
+      # specify the version you desire here 
+      - image: circleci/ruby:3.0.1-node-browsers
         environment:
-          BUNDLE_JOBS: 3
-          BUNDLE_PATH: vendor/bundle
-          BUNDLE_RETRY: 3
           BUNDLER_VERSION: 2.2.16
           RAILS_ENV: test
           DB_HOST: 127.0.0.1
-          DB_USERNAME: root
+          DB_USERNAME: 'root'
           DB_PASSWORD: 'Hao@0869'
+
       - image: circleci/mysql:8.0.25
-        command: [--default-authentication-plugin=mysql_native_password]
         environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          MYSQL_ROOT_HOST: '%'
+          MYSQL_DATABASE: 'sample_app_test'
+          MYSQL_USER: 'root'
+          MYSQL_ROOT_PASSWORD: 'Hao@0869'
     steps:
       - checkout
       - ruby/install-deps
       - node/install-packages:
-          cache-key: yarn.lock
           pkg-manager: yarn
+          cache-key: "yarn.lock"
+      # Here we make sure that the secondary container boots
+      # up before we run operations on the database.
       - run:
-          command: 'dockerize -wait tcp://localhost:3306 -timeout 1m'
           name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
-          command: 'bundle exec rails db:schema:load --trace'
           name: Database setup
+          command: bundle exec rails db:schema:load --trace
+      # Run rspec in parallel
       - ruby/rspec-test
-
 workflows:
   build_and_test:
     jobs:
