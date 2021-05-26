@@ -11,7 +11,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.0.1
   SuggestExtensions: false
 
 InternalAffairs/NodeMatcherDirective:

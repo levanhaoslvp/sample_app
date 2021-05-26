@@ -44,7 +44,7 @@ jobs:
       - image: circleci/mysql:8.0.23
         environment:
           MYSQL_DATABASE: 'sample_app_test'
-          MYSQL_USER: 'root'
+          MYSQL_ROOT_USER: 'root'
           MYSQL_ROOT_PASSWORD: 'Hao@0869'
     steps:
       - checkout
@@ -56,7 +56,7 @@ jobs:
       # up before we run operations on the database.
       - run:
           name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace
