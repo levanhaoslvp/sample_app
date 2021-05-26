@@ -25,9 +25,7 @@ jobs:
       - ruby/install-deps
       - run:
           name: Rubocop
-          command: |
-            bundle exec rubocop
-            rubocop -A
+          command: rubocop -A
 
   test:  
     parallelism: 3
@@ -41,7 +39,7 @@ jobs:
           DB_USERNAME: 'root'
           DB_PASSWORD: 'Hao@0869'
 
-      - image: circleci/mysql:8.0.23
+      - image: circleci/mysql:8.0.25
         environment:
           MYSQL_DATABASE: 'sample_app_test'
           MYSQL_ROOT_USER: 'root'

@@ -6,7 +6,7 @@ RSpec.describe 'Applications', type: :request do
   describe 'GET #index' do
     it 'returns a 302 OK status' do
       get '/home'
-      expect(response).to have_http_status(302)
+      expect(response.has_http_status?(:found)).to be(true)
     end
   end
 end
