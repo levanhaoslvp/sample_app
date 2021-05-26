@@ -16,8 +16,59 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
           cache-key: "yarn.lock"
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+      - run:
+          name: Setup DB
+          command: bundle exec rails db:create db:schema:load --trace
+
+  checking:
+    docker:
+      - image: 'cimg/ruby:3.0.1-node'
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rubocop-check:
+          format: progress
+          label: Inspecting with Rubocop
+
+  test:
+    docker:
+      - image: circleci/ruby:3.0.1
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_RETRY: 3
+          BUNDLER_VERSION: 2.0.1
+          RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: 'Hao@0869'
+      - image: circleci/mysql:8.0.25
+        command: [--default-authentication-plugin=mysql_native_password]
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+          MYSQL_ROOT_HOST: '%'
+    steps:
+      - checkout
+      - ruby/install-deps
+      - node/install-packages:
+          cache-key: yarn.lock
+          pkg-manager: yarn
+      - run:
+          command: 'dockerize -wait tcp://localhost:3306 -timeout 1m'
+          name: Wait for DB
+      - run:
+          command: 'bundle exec rails db:schema:load --trace'
+          name: Database setup
+      - ruby/rspec-test
+
 workflows:
-  version: 2
-  build:     
+  build_and_test:
     jobs:
       - build
+      - checking
+      - test:
+          requires:
+            - build
