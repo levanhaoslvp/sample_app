@@ -41,7 +41,7 @@ jobs:
           DB_USERNAME: 'root'
           DB_PASSWORD: 'Hao@0869'
 
-      - image: circleci/mysql:8.0.25
+      - image: circleci/mysql:8.0.23
         environment:
           MYSQL_DATABASE: 'sample_app_test'
           MYSQL_USER: 'root'
