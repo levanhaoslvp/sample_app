@@ -40,7 +40,7 @@ jobs:
           BUNDLE_JOBS: 3
           BUNDLE_PATH: vendor/bundle
           BUNDLE_RETRY: 3
-          BUNDLER_VERSION: 2.0.1
+          BUNDLER_VERSION: 2.2.16
           RAILS_ENV: test
           DB_HOST: 127.0.0.1
           DB_USERNAME: root

@@ -37,6 +37,7 @@ gem 'jquery-rails'
 gem 'rubocop', require: false
 gem 'rubocop-minitest', require: false
 gem 'rubocop-rails'
+gem 'rubocop-rspec', require: false
 gem 'ruby-progressbar'
 gem 'yaml_db'
 
