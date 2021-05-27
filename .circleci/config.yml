@@ -34,12 +34,12 @@ jobs:
       - image: circleci/ruby:3.0.1-node-browsers
         environment:
           BUNDLER_VERSION: 2.2.16
-          RAILS_ENV: development
+          RAILS_ENV: test
           DB_HOST: 127.0.0.1
       - image: circleci/mysql:8.0
         environment:
           MYSQL_DATABASE: 'sample_app_test'
-          MYSQL_ROOT_USER: root
+          MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: 'Hao@0869'
     steps:
       - checkout
