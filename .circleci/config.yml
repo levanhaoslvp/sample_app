@@ -39,6 +39,10 @@ jobs:
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 
+      - run:
+          name: webpacker install
+          command: |
+            bundle rails webpacker:install
       # Store bundle cache
       - save_cache:
           paths:
