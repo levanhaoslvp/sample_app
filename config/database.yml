@@ -14,7 +14,6 @@ test:
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: root
   password: Hao@0869
-  socket: /var/run/mysqld/mysqld.sock
   port: 3306
   database: sample_app_test
 
