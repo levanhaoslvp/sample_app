@@ -42,7 +42,7 @@ jobs:
       - run:
           name: webpacker install
           command: |
-            bundle rails webpacker:install
+            bundle exec rails webpacker:install
       # Store bundle cache
       - save_cache:
           paths:
