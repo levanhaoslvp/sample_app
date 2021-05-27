@@ -2,8 +2,8 @@ version: 2.1
 orbs:
   ruby: circleci/ruby@0.1.2
 
-jobs:
-  build:
+executors:
+  default:
     working_directory: ~/sample_app
     docker:
       - image: circleci/ruby:3.0.1-node-browsers-legacy
@@ -18,6 +18,9 @@ jobs:
           MYSQL_ROOT_PASSWORD: Hao@0869
           MYSQL_DB: sample_app_test
 
+jobs:
+  build:
+    executor: default
     steps:
       - checkout
 
@@ -52,10 +55,6 @@ jobs:
           name: run rspec
           command: |
             bundle exec rspec --profile 10 \
-                              --format RspecJunitFormatter \
-                              --out test_results/rspec.xml \
-                              --format progress \
-                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
 
       # collect reports
       - store_test_results:
@@ -66,3 +65,38 @@ jobs:
       - store_artifacts:
           path: tmp/screenshots
           destination: test-screenshots
+
+  # test:
+  #   executor: default
+  #   parallelism: 3
+  #   steps:
+  #     - checkout
+  #     - ruby/install-deps
+  #     - node/install-packages:
+  #         cache-key: yarn.lock
+  #         pkg-manager: yarn
+  #     - run:
+  #         command: 'dockerize -wait tcp://localhost:5432 -timeout 1m'
+  #         name: Wait for DB
+  #     - run:
+  #         command: 'bundle exec rails db:schema:load --trace'
+  #         name: Database setup
+  #     - ruby/rspec-test
+  rubocop:
+    executor: default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - configure_bundler
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+workflows:
+  version: 2
+  integration:
+    jobs:
+      - build
+      - rubocop
+      - test:
+          requires:
+            - build
