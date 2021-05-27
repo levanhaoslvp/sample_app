@@ -1,71 +1,67 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@1.0
-  node: circleci/node@2
+  ruby: circleci/ruby@0.1.2
 
 jobs:
   build:
+    working_directory: ~/circleci-demo-ruby-rails
     docker:
-      - image: cimg/ruby:3.0.1-node
-        auth:
-         username: mydockerhub-user
-         password: $DOCKERHUB_PASSWORD 
-    steps:
-      - checkout
-      - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
-
-  checking:
-    docker:
-      - image: 'cimg/ruby:3.0.1-node'
-    steps:
-      - checkout
-      - ruby/install-deps
-      - run:
-          name: Rubocop
-          command: bundle exec rubocop -A
-
-  test:  
-    parallelism: 3
-    docker:
-      # specify the version you desire here 
-      - image: circleci/ruby:3.0.1-node-browsers
+      - image: circleci/ruby:3.0.1-node-browsers-legacy
         environment:
-          BUNDLER_VERSION: 2.2.16
-          RAILS_ENV: test
           DB_HOST: 127.0.0.1
-      - image: circleci/mysql:8.0
-        command: [--default-authentication-plugin=mysql_native_password]
+          RAILS_ENV: test
+          BUNDLER_VERSION: 2.1.17
+      - image: circleci/mysql:8.0.25-ram
         environment:
-          MYSQL_DATABASE: 'sample_app_test'
-          MYSQL_ROOT: root
-          MYSQL_ROOT_PASSWORD: 'Hao@0869'
+          MYSQL_USER: root
+          MYSQL_USER: 'Hao@0869'
+          MYSQL_DB: sample_app_test
+
     steps:
       - checkout
-      - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
-      # Here we make sure that the secondary container boots
-      # up before we run operations on the database.
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+            - rails-demo-{{ checksum "Gemfile.lock" }}
+            - rails-demo-
+
       - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+          name: Which bundler?
+          command: bundle -v
+
       - run:
-          name: Database create
-          command: bundle exec rails db:create
+          name: bundle install
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      # Store bundle cache
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Database setup
+      - run: cp -v config/database.ci.yml config/database.yml
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:schema:load
+
+      # RSpec
       - run:
-          name: Database setup
-          command: bundle exec rails db:schema:load --trace
-      # Run rspec in parallel
-      - ruby/rspec-test
-workflows:
-  build_and_test:
-    jobs:
-      - build
-      - checking
-      - test:
-          requires:
-            - build
+          name: run rspec
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      - store_artifacts:
+          path: tmp/screenshots
+          destination: test-screenshots

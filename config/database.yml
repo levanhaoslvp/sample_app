@@ -16,6 +16,8 @@ test:
   password: Hao@0869
   port: 3306
   database: sample_app_test
+  username: root # .circleci/config.yml のMYSQL_USERと揃える。
+  password: 'Hao@0869'
 
 production:
   adapter: mysql2
