@@ -82,21 +82,18 @@ jobs:
   #         command: 'bundle exec rails db:schema:load --trace'
   #         name: Database setup
   #     - ruby/rspec-test
-  rubocop:
-    executor: default
+  checking:
+    docker:
+      - image: 'cimg/ruby:3.0.1-node'
     steps:
-      - attach_workspace:
-          at: ~/
-      - configure_bundler
-      - run:
-          name: Rubocop
-          command: bundle exec rubocop
+      - checkout
+      - ruby/install-deps
+      - ruby/rubocop-check:
+          format: progress
+          label: Inspecting with Rubocop
 workflows:
   version: 2
-  integration:
-    jobs:
-      - build
-      - rubocop
-      - test:
-          requires:
-            - build
+    build_and_test:
+      jobs:
+        - build
+        - checking
