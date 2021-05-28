@@ -17,7 +17,7 @@ executors:
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: Hao@0869
           MYSQL_DB: sample_app_test
-          
+
 commands:
   configure_bundler:
     description: Configure bundler
@@ -28,20 +28,9 @@ commands:
             echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
             source $BASH_ENV
             gem install bundler
-jobs:
-  build:
-    executor: default
+  install_bundler:
+    description: bundler check, install
     steps:
-      - checkout
-
-      # Restore bundle cache
-      - restore_cache:
-          keys:
-            - sample-app-{{ checksum "Gemfile.lock" }}
-            - sample-app-
-
-      - configure_bundler
-
       - run:
           name: Which bundler?
           command: bundle -v
@@ -55,6 +44,22 @@ jobs:
           name: webpacker install
           command: |
             bundle exec yarn upgrade webpack
+
+jobs:
+  build:
+    executor: default
+    steps:
+      - checkout
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+            - sample-app-{{ checksum "Gemfile.lock" }}
+            - sample-app-
+
+      - configure_bundler
+      - install_bundler
+
       # Store bundle cache
       - save_cache:
           paths:
@@ -67,6 +72,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - configure_bundler
+      - install_bundler
       - run:
           name: Rubocop
           command: bundle exec rubocop
@@ -76,6 +82,7 @@ jobs:
     steps:
       - checkout
       - configure_bundler
+      - install_bundler
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
