@@ -74,7 +74,9 @@ jobs:
       - install_bundler
       - run:
           name: Rubocop
-          command: bundle exec rubocop
+          command: |
+            bundle exec rubocop -A
+            bundle exec rubocop
 
   test:
     executor: default
