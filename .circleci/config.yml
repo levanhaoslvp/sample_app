@@ -69,8 +69,7 @@ jobs:
   rubocop:
     executor: default
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
       - configure_bundler
       - install_bundler
       - run:
