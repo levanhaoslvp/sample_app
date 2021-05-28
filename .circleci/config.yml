@@ -1,74 +1,118 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@1.0
-  node: circleci/node@2
+  ruby: circleci/ruby@0.1.2
+
+executors:
+  default:
+    working_directory: ~/sample_app
+    docker:
+      - image: circleci/ruby:3.0.1-node-browsers-legacy
+        environment:
+          DB_HOST: 127.0.0.1
+          RAILS_ENV: test
+          BUNDLER_VERSION: 2.1.17
+      - image: circleci/mysql:8.0.19-ram
+        command: [--default-authentication-plugin=mysql_native_password]
+        environment:
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: Hao@0869
+          MYSQL_DB: sample_app_test
+
+commands:
+  configure_bundler:
+    description: Configure bundler
+    steps:
+      - run:
+          name: Configure bundler
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+  install_bundler:
+    description: bundler check, install
+    steps:
+      - run:
+          name: Which bundler?
+          command: bundle -v
+
+      - run:
+          name: bundle install
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - run:
+          name: webpacker install
+          command: |
+            bundle exec yarn upgrade webpack
 
 jobs:
   build:
-    docker:
-      - image: cimg/ruby:3.0.1-node
-        auth:
-         username: mydockerhub-user
-         password: $DOCKERHUB_PASSWORD 
+    executor: default
     steps:
       - checkout
-      - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+            - sample-app-{{ checksum "Gemfile.lock" }}
+            - sample-app-
+
+      - configure_bundler
+      - install_bundler
+
+      # Store bundle cache
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+  rubocop:
+    executor: default
+    steps:
+      - checkout
+      - configure_bundler
+      - install_bundler
+      - run:
+          name: Rubocop
+          command: |
+            bundle exec rubocop -A
+            bundle exec rubocop
+
+  test:
+    executor: default
+    steps:
+      - checkout
+      - configure_bundler
+      - install_bundler
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: Setup DB
-          command: bundle exec rails db:create db:schema:load --trace
 
-  checking:
-    docker:
-      - image: 'cimg/ruby:3.0.1-node'
-    steps:
-      - checkout
-      - ruby/install-deps
-      - ruby/rubocop-check:
-          format: progress
-          label: Inspecting with Rubocop
+      # Database setup
+      - run: cp -v config/database.ci.yml config/database.yml
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:schema:load
+      - run:
+          name: run rspec
+          command: |
+            bundle exec rspec --profile 10 \
 
-  test:
-    docker:
-      - image: circleci/ruby:3.0.1
-        environment:
-          BUNDLE_JOBS: 3
-          BUNDLE_PATH: vendor/bundle
-          BUNDLE_RETRY: 3
-          BUNDLER_VERSION: 2.0.1
-          RAILS_ENV: test
-          DB_HOST: 127.0.0.1
-          DB_USERNAME: root
-          DB_PASSWORD: 'Hao@0869'
-      - image: circleci/mysql:8.0.25
-        command: [--default-authentication-plugin=mysql_native_password]
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          MYSQL_ROOT_HOST: '%'
-    steps:
-      - checkout
-      - ruby/install-deps
-      - node/install-packages:
-          cache-key: yarn.lock
-          pkg-manager: yarn
-      - run:
-          command: 'dockerize -wait tcp://localhost:3306 -timeout 1m'
-          name: Wait for DB
-      - run:
-          command: 'bundle exec rails db:schema:load --trace'
-          name: Database setup
-      - ruby/rspec-test
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+      - store_artifacts:
+          path: tmp/screenshots
+          destination: test-screenshots
 
 workflows:
+  version: 2
   build_and_test:
     jobs:
       - build
-      - checking
+      - rubocop
       - test:
           requires:
             - build
