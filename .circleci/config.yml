@@ -17,7 +17,17 @@ executors:
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: Hao@0869
           MYSQL_DB: sample_app_test
-
+          
+commands:
+  configure_bundler:
+    description: Configure bundler
+    steps:
+      - run:
+          name: Configure bundler
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
 jobs:
   build:
     executor: default
@@ -27,8 +37,10 @@ jobs:
       # Restore bundle cache
       - restore_cache:
           keys:
-            - rails-demo-{{ checksum "Gemfile.lock" }}
-            - rails-demo-
+            - sample-app-{{ checksum "Gemfile.lock" }}
+            - sample-app-
+
+      - configure_bundler
 
       - run:
           name: Which bundler?
@@ -49,12 +61,29 @@ jobs:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
 
+  rubocop:
+    executor: default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - configure_bundler
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+
+  test:
+    executor: default
+    steps:
+      - checkout
+      - configure_bundler
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+
       # Database setup
       - run: cp -v config/database.ci.yml config/database.yml
       - run: bundle exec rails db:create
       - run: bundle exec rails db:schema:load
-
-      # RSpec
       - run:
           name: run rspec
           command: |
@@ -69,3 +98,13 @@ jobs:
       - store_artifacts:
           path: tmp/screenshots
           destination: test-screenshots
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - rubocop
+      - test:
+          requires:
+            - build
