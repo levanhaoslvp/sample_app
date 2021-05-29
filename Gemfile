@@ -41,7 +41,7 @@ gem "yaml_db"
 
 # gem devise omniauth
 gem "devise"
-gem "mniauth-facebook"
+gem "omniauth-facebook"
 gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
