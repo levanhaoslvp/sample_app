@@ -34,7 +34,6 @@ commands:
       - run:
           name: Which bundler?
           command: bundle -v
-
       - run:
           name: bundle install
           command: |
@@ -43,21 +42,19 @@ commands:
           name: webpacker install
           command: |
             bundle exec yarn upgrade webpack
+
 jobs:
   build:
     executor: default
     steps:
       - checkout
-
       # Restore bundle cache
       - restore_cache:
           keys:
             - sample-app-{{ checksum "Gemfile.lock" }}
             - sample-app-
-
       - configure_bundler
       - install_bundler
-
       # Store bundle cache
       - save_cache:
           paths:
@@ -75,6 +72,7 @@ jobs:
           command: |
             bundle exec rubocop -A
             bundle exec rubocop
+
   test:
     executor: default
     steps:
@@ -84,7 +82,6 @@ jobs:
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-
       # Database setup
       - run: cp -v config/database.ci.yml config/database.yml
       - run: bundle exec rails db:create
@@ -103,12 +100,33 @@ jobs:
           path: tmp/screenshots
           destination: test-screenshots
 
+   deploy:
+    docker:
+      - image: buildpack-deps:trusty
+    environment:
+      HEROKU_API_KEY: 06d29ced-7d1d-413a-bdab-9166f6db654a
+      HEROKU_APP_NAME: intense-earth-58731
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
       - rubocop
+          requires:
+            - build
       - test:
           requires:
             - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
