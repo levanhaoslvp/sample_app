@@ -100,7 +100,7 @@ jobs:
           path: tmp/screenshots
           destination: test-screenshots
 
-   deploy:
+  deploy:
     docker:
       - image: buildpack-deps:trusty
     environment:
@@ -118,7 +118,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - rubocop
+      - rubocop:
           requires:
             - build
       - test:
