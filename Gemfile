@@ -7,6 +7,7 @@ ruby "3.0.1"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem "active_storage_validations"
+gem "acts_as_votable"
 gem "bcrypt"
 gem "bootstrap-sass"
 gem "bootstrap-will_paginate"
@@ -45,6 +46,10 @@ gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
+
+# gem comment post
+gem "closure_tree"
+gem "private_pub"
 
 group :development, :test do
   gem "byebug", platforms: %i(mri mingw x64_mingw)

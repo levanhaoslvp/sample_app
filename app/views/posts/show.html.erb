@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @post.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @post.content %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @post.user_id %>
+</p>
+
+<%= link_to "Edit", edit_post_path(@post) %> |
+<%= link_to "Back", posts_path %>
+<%= render "posts/vote_form", post: @post %>
+<div class="row">
+  <%= render "comments/comment_form", post: @post, parent_id: nil, comment_new: @comment %>
+  <div class="col-md-11">
+   <%= comments_tree_for @post.comments.where(parent_id: nil).hash_tree(limit_depth: 2) %>
+  </div>
+</div>
