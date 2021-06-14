@@ -9,8 +9,9 @@
           <li><%= link_to "Users", "#" %></li>         
           <li><%= link_to "Profile", "#" %></li>
           <li><%= link_to "Settings", edit_user_registration_path %></li>
-          <li>
-            <%= gravatar_for current_user, size: 50 %>
+          <li class="nav-item">
+            <%= image_tag(current_user.providers.find_by(provider: session["provider"]).avatar,
+                          width: "50", heigth: "50", class: "img-circle") %>
             <%= button_to "Log out", destroy_user_session_path, :method => :delete %>
           </li>
         <% else %>

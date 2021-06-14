@@ -1,0 +1,15 @@
+<div id="vote_form-comment<%= comment.id %>">
+  <% if user_signed_in? %>
+    <% if (current_user.voted_down_on? comment) || (!ActsAsVotable::Vote.where(voter_id: current_user, votable_id: comment.id).present?) %>
+      <%= link_to comment_votes_path(comment), method: :post, remote: true do %>
+        <span class="glyphicon glyphicon-heart-empty"></span>
+      <% end %>
+    <% else %>
+      <%= link_to comment_vote_path(comment, 0), method: :delete, remote: true do %>
+        <span class="glyphicon glyphicon-heart"></span>
+      <% end %>
+    <% end %>
+  <% end %>
+  <%= t "posts.show.like" %> <%= comment.get_upvotes.size %>
+  <%= raw comment.votes_for.up.by_type(User).voters.map { |voter| link_to voter.email, "#" }.join(", ") %>
+</div>

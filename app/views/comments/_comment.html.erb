@@ -1,0 +1,22 @@
+<div id="form-comment-<%= post.id %>-<%= comment.parent_id %>">
+  <div class="row">
+    <div class="col-md-1">
+      <%= link_to gravatar_for(post.user, size: 40), user_confirmation_path(post.user) %>
+    </div>
+    <div class="col-md-11">
+      <%= link_to (comment.user.name), user_path(comment.user_id) %>:
+      <span class="timestamp">
+        <%= comment.created_at %>
+      </span><br/>
+      <p><%= comment.content %><p>
+        <%= link_to "delete", post_comment_path(post, comment),
+                    method: :delete,
+                    data: { confirm: t("posts.show.sure"), remote: true } %>
+        <%= render "comments/vote_form", comment: comment %>
+      <div class="col-md-11">
+        <%= render "comments/comment_form", post: post, parent_id: comment.id,
+                                            comment_new: Comment.new %>
+      </div>
+    </div>
+  </div>
+</div>

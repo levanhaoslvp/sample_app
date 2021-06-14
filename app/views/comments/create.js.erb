@@ -1,0 +1,2 @@
+$('#form-comment-<%= @comment.post_id %>-<%= @comment.parent_id %>').before("<%= j render(@comment, post: @comment.post) %>");
+$('#form-comment form textarea').val('');
