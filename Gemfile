@@ -53,8 +53,10 @@ gem "private_pub"
 
 group :development, :test do
   gem "byebug", platforms: %i(mri mingw x64_mingw)
+  gem "factory_bot_rails"
   gem "mysql2", "~>0.5.3"
   gem "rspec-rails"
+  gem "shoulda-matchers"
 end
 
 group :development do
@@ -68,6 +70,7 @@ end
 
 group :test do
   gem "capybara", ">= 3.26"
+  gem "database_cleaner-active_record"
   gem "minitest"
   gem "minitest-reporters"
   gem "rails-controller-testing"
