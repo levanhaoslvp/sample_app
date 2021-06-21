@@ -9,10 +9,9 @@
     <% if current_user == post.user %>
     <%= button_to "Destroy", post, method: :delete, data: { confirm: "Are you sure?" } %>
     <% end %></br>
-    <%= render "posts/vote_form", post: post %></br>
     Comments:</br>
     <div class="row">
-      <%= render "comments/comment_form", post: post, parent_id: nil, comment_new: @comment %>
+      <%= render "comments/comment_form", post: post, parent_id: nil, comment_new: Comment.new %>
       <div class="col-md-11">
        <%= comments_tree_for post.comments.where(parent_id: nil).hash_tree(limit_depth: 2) %>
       </div>
