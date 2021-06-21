@@ -27,7 +27,6 @@ RSpec.describe "Comments", type: :request do
       it "no sign-in no pass" do
         current_user = create_user
         post = current_user.posts.create! valid_post
-        comment_new = Comment.new(user_id: current_user.id, post_id: post.id, content: 'abc')
         post post_comments_url(post),
           params: {comment: {user_id: current_user.id, post_id: post.id, content: 'abc'}},xhr: true
         expect(response).to_not be_successful

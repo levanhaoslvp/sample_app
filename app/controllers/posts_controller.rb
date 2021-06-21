@@ -25,7 +25,7 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = current_user.posts.build post_params
+    @post = Post.new post_params
 
     respond_to do |format|
       if @post.save
@@ -75,6 +75,6 @@ class PostsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :content)
+    params.require(:post).permit :title, :content, :user_id
   end
 end

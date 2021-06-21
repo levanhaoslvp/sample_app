@@ -30,7 +30,7 @@ RSpec.describe "/posts", type: :request do
     }
   end
 
-  let(:valid_post) do 
+  let(:valid_post_user) do 
     {
       'title' => 'my tittle',
       'content' => 'abc xyz'
@@ -48,7 +48,7 @@ RSpec.describe "/posts", type: :request do
     it 'show all post' do
       current_user = create_user
       sign_in current_user
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       comment = post.comments
       get posts_url
       expect(response).to be_successful
@@ -59,7 +59,7 @@ RSpec.describe "/posts", type: :request do
     it "show post" do
       current_user = create_user
       sign_in current_user
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       get post_url(post)
       expect(response).to be_successful
     end
@@ -78,7 +78,7 @@ RSpec.describe "/posts", type: :request do
     it "render a successful response" do
       current_user = create_user
       sign_in current_user
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       get edit_post_url(post)
       expect(response).to be_successful
     end
@@ -90,14 +90,16 @@ RSpec.describe "/posts", type: :request do
         expect do 
           current_user = create_user
           sign_in current_user
-          post posts_url, params: { post: valid_post }
+          valid_post_user['user_id'] = current_user.id
+          post posts_url, params: { post: valid_post_user }
         end.to change(Post, :count).by(1)
       end
 
       it "redirects to the created post" do
         current_user = create_user
         sign_in current_user
-        post posts_url, params: { post: valid_post}
+        valid_post_user['user_id'] = current_user.id
+        post posts_url, params: { post: valid_post_user}
         expect(response).to redirect_to(post_url(Post.last))
       end
     end
@@ -106,6 +108,7 @@ RSpec.describe "/posts", type: :request do
       it "does not create a new Post no content" do
         current_user = create_user
         sign_in current_user
+        invalid_post_content['user_id'] = current_user.id
         expect {
           post posts_url, params: { post: invalid_post_content}
         }.to change(Post, :count).by(0)
@@ -114,6 +117,7 @@ RSpec.describe "/posts", type: :request do
       it "does not create a new Post no title" do
         current_user = create_user
         sign_in current_user
+        invalid_post_title['user_id'] = current_user.id
         expect {
           post posts_url, params: { post: invalid_post_title}
         }.to change(Post, :count).by(0)
@@ -122,6 +126,7 @@ RSpec.describe "/posts", type: :request do
       it " ridirect to new post (i.e. to display the 'new' template)" do
         current_user = create_user
         sign_in current_user
+        invalid_post_content['user_id'] = current_user.id
         expect {
           post posts_url, params: { post: invalid_post_content}
         }.to change(Post, :count).by(0)
@@ -132,6 +137,7 @@ RSpec.describe "/posts", type: :request do
       it " ridirect to new post (i.e. to display the 'new' template)" do
         current_user = create_user
         sign_in current_user
+        invalid_post_content['user_id'] = current_user.id
         expect {
           post posts_url, params: { post: invalid_post_content}
         }.to change(Post, :count).by(0)
@@ -145,7 +151,7 @@ RSpec.describe "/posts", type: :request do
     context "with valid parameters" do
       it "no sign-in no pass" do
         current_user = create_user
-        post = current_user.posts.create! valid_post
+        post = current_user.posts.create! valid_post_user
         patch post_url(post), params: { post: new_post }
         post.reload
         expect(response).to redirect_to(new_user_session_url)
@@ -154,7 +160,7 @@ RSpec.describe "/posts", type: :request do
       it "redirects to the post" do
         current_user = create_user
         sign_in current_user
-        post = current_user.posts.create! valid_post
+        post = current_user.posts.create! valid_post_user
         patch post_url(post), params: { post: new_post }
         post.reload
         expect(response).to redirect_to(post_url(post))
@@ -165,7 +171,7 @@ RSpec.describe "/posts", type: :request do
       it "no sign-in no pass" do
         current_user = create_user
         get posts_url
-        post = current_user.posts.create! valid_post
+        post = current_user.posts.create! valid_post_user
         patch post_url(post), params: { post: invalid_post_content}
         post.reload
         expect(response).to redirect_to(new_user_session_url)
@@ -175,7 +181,7 @@ RSpec.describe "/posts", type: :request do
         current_user = create_user
         sign_in current_user
         get posts_url
-        post = current_user.posts.create! valid_post
+        post = current_user.posts.create! valid_post_user
         patch post_url(post), params: { post: invalid_post_content}
         post.reload
         expect(response.status).to render_template(:edit)
@@ -187,7 +193,7 @@ RSpec.describe "/posts", type: :request do
     it "no sign-in no pass" do
       current_user = create_user
       get posts_url
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       delete post_url(post)
       expect(response).to redirect_to(new_user_session_url)
     end
@@ -195,7 +201,7 @@ RSpec.describe "/posts", type: :request do
     it "destroys the requested post" do
       current_user = create_user
       sign_in current_user
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       expect {
         delete post_url(post)
       }.to change(Post, :count).by(-1)
@@ -204,7 +210,7 @@ RSpec.describe "/posts", type: :request do
     it "redirects to the posts list" do
       current_user = create_user
       sign_in current_user
-      post = current_user.posts.create! valid_post
+      post = current_user.posts.create! valid_post_user
       delete post_url(post)
       expect(response).to redirect_to(posts_url)
     end
