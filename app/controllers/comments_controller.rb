@@ -1,18 +1,14 @@
 class CommentsController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!
   before_action :set_comment, only: [:destroy]
+  before_action :filter_comment, only: [:create]
 
   def create
-    if params[:comment][:parent_id].to_i.positive?
-      parent = Comment.find_by id: params[:comment].delete(:parent_id)
-      @comment = parent.children.build comment_params
-    else
-      @comment = Comment.new comment_params
-    end
-
     respond_to do |format|
       if @comment.save
         format.js
+        format.html{redirect_back fallback_location: root_path}
       else
         format.html{render @comment}
       end
@@ -38,5 +34,14 @@ class CommentsController < ApplicationController
 
   def set_comment
     @comment = Comment.find_by id: params[:id]
+  end
+
+  def filter_comment
+    if params[:comment][:parent_id].to_i.positive?
+      parent = Comment.find(params[:comment].delete(:parent_id))
+      @comment = parent.children.build comment_params
+    else
+      @comment = Comment.new comment_params
+    end
   end
 end

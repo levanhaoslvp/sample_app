@@ -10,12 +10,12 @@ module ApplicationHelper
     end
   end
 
-  def gravatar_for user, options = {size: 80}
+  def gravatar_for user, options = {size: 30}
     size = options[:size]
     prov = session["provider"]
     gravatar_id = Digest::MD5.hexdigest(user.email.downcase)
-    auth_avatar = current_user.providers.find_by(provider: prov).avatar
-    gravatar_url = auth_avatar || "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
-    image_tag(gravatar_url, alt: user.name, class: "gravatar")
+    auth_avt = user.providers.find_by(provider: prov).avatar if prov
+    gravatar_url = auth_avt || "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
+    image_tag(gravatar_url, alt: user.name, width: size, heigth: size)
   end
 end
