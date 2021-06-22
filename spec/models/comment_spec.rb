@@ -1,12 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  current_user = User.create(email: 'fake@example.com',
-    password: 'password12',password_confirmation: 'password12',confirmed_at: Time.now)
-  
-  let(:post_test) {
-    Post.new(:title => "post test", :content => "hello ",
-       :user_id => current_user.id, :created_at => DateTime.now, :image => "path" )
+  let(:current_user){
+    create(:user)
   }
   
   describe "Associations" do
@@ -21,9 +17,8 @@ RSpec.describe Comment, type: :model do
   end
 
   it "has a content" do
-    comment = build(:comment_no_content)
-    comment.post = post_test
-    comment.user = current_user
+    comment = build(:comment_no_content,:user => current_user)
+    comment.post = create(:post, :user => current_user)
     expect(comment).to_not be_valid
 
     comment.content = "my comment"
@@ -31,17 +26,16 @@ RSpec.describe Comment, type: :model do
   end
 
   it "has a post" do
-    comment = build(:comment)
-    comment.user = current_user
+    comment = build(:comment, :user => current_user)
     expect(comment).to_not be_valid
 
-    comment.post = post_test
+    comment.post = create(:post, :user => current_user)
     expect(comment).to be_valid
   end
 
   it "has a user" do
     comment = build(:comment)
-    comment.post = post_test
+    comment.post = create(:post, :user => current_user)
     expect(comment).to_not be_valid
 
     comment.user = current_user

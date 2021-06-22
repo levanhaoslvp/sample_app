@@ -2,7 +2,8 @@ FactoryBot.define do
   factory :post do
     title {'my title'}
     content {'my content'}
-    image {'https://vcdn-thethao.vnecdn.net/2021/06/20/1-2426-1624149210.jpg'}
+    created_at {2.day.ago}
+    image {'path'}
 
     trait :no_title do
       title {''}
@@ -16,8 +17,13 @@ FactoryBot.define do
       image {''}
     end
 
+    trait :no_user do
+      user {nil}
+    end
+
     factory :post_no_title, traits: [:no_title]
     factory :post_no_content, traits: [:no_content]
-    factory :post_no_image, traits: [:no_image] 
+    factory :post_no_image, traits: [:no_image]
+    factory :post_no_user, traits: [:no_user] 
   end
 end
