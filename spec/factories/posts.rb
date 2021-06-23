@@ -3,7 +3,7 @@ FactoryBot.define do
     title {'my title'}
     content {'my content'}
     created_at {2.day.ago}
-    image {'path'}
+    image {'https://theme.hstatic.net/1000260507/1000683850/14/hbanner_img1.png?v=45'}
 
     trait :no_title do
       title {''}
