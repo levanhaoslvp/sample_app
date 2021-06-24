@@ -41,7 +41,7 @@ RSpec.describe "/posts", type: :request do
 
   let(:test_post){ create(:post, user: current_user)}
 
-  let(:comment_post){ create(:comment, post_id: post.id, user_id: current_user.id)}
+  let(:comment_post){ create(:comment, post_id: test_post.id, user_id: current_user.id)}
 
   before {sign_in current_user}
 

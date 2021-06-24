@@ -27,14 +27,14 @@ RSpec.describe "Comments", type: :request do
     before {sign_out current_user}
 
     it "redirect to sign-in when POST /create" do
-      post post_comments_url(test_post),params: {comment: comment_param },xhr: true
-      expect(response).to_not be_successful
+      post post_comments_url(test_post),params: {comment: comment_param }
+      expect(response).to redirect_to(new_user_session_url)
     end
 
     it "redirect to sign-in when DELETE /destroy" do
       comment = create(:comment, user_id: current_user.id, post_id: test_post.id)
-      delete comment_url(comment), xhr: true
-      expect(response).to_not be_successful
+      delete comment_url(comment)
+      expect(response).to redirect_to(new_user_session_url)
     end
   end
 
