@@ -48,65 +48,57 @@ RSpec.describe "/posts", type: :request do
   describe 'no loggin' do
     before {sign_out current_user}
 
-    it 'GET /index' do 
+    it 'redirect to sign-in when GET /index' do 
       get posts_url
       expect(response).to redirect_to(new_user_session_url)
     end
 
-    it 'GET /show' do 
+    it 'redirect to sign-in when GET /show' do 
       get post_url(test_post)
       expect(response).to redirect_to(new_user_session_url)
     end
 
-    it 'GET /new' do 
+    it 'redirect to sign-in when GET /new' do 
       get new_post_url
       expect(response).to redirect_to(new_user_session_url)
     end
 
-    it 'GET /edit' do 
+    it 'redirect to sign-in when GET /edit' do 
       get edit_post_url(test_post)
       expect(response).to redirect_to(new_user_session_url)
     end
 
-    it 'GET /create' do 
+    it 'redirect to sign-in when POST /create' do 
       valid_post_user['user_id'] = current_user.id
       post posts_url, params: { post: valid_post_user}
       expect(response).to redirect_to(new_user_session_url)
     end
   end
 
-  describe 'GET /index' do
-    it 'show all post' do
+  describe ' logged ' do
+    it 'show all post (GET/index)' do
       comment = test_post.comments
       get posts_url
       expect(response).to be_successful
     end
-  end
 
-  describe "GET /show" do
-    it "show post" do
+    it "show detail post (GET /show)" do
       comment = test_post.comments
       get post_url(test_post)
       expect(response).to be_successful
     end
-  end
 
-  describe "GET /new" do
-    it "renders a successful response" do
+    it "renders a successful response (GET/new)" do
       get new_post_url
       expect(response).to be_successful
     end
-  end
 
-  describe "GET /edit" do
-    it "render a successful response" do
+    it "render a successful response (GET /edit)" do
       get edit_post_url(test_post)
       expect(response).to be_successful
     end
-  end
 
-  describe "POST /create" do
-    context "with valid parameters" do
+    context "with valid parameters (POST/create)" do
       it "creates a new Post" do
         expect do 
           valid_post_user['user_id'] = current_user.id
@@ -121,10 +113,9 @@ RSpec.describe "/posts", type: :request do
       end
     end
 
-    context "with invalid parameters" do
+    context "with invalid parameters (POST/create)" do
       it "does not create a new Post - no content" do
         invalid_post_content['user_id'] = current_user.id
-
         expect {
           post posts_url, params: { post: invalid_post_content}
         }.to change(Post, :count).by(0)
@@ -132,7 +123,6 @@ RSpec.describe "/posts", type: :request do
 
       it "does not create a new Post - no title" do
         invalid_post_title['user_id'] = current_user.id
-
         expect {
           post posts_url, params: { post: invalid_post_title}
         }.to change(Post, :count).by(0)
@@ -150,10 +140,8 @@ RSpec.describe "/posts", type: :request do
         expect(response).to render_template(:new)
       end
     end
-  end
 
-  describe "PATCH /update" do
-    context "with valid parameters" do
+    context "with valid parameters (PATCH /update)" do
       it "redirects to the post" do
         patch post_url(test_post), params: { post: valid_post_user }
         test_post.reload
@@ -161,27 +149,27 @@ RSpec.describe "/posts", type: :request do
       end
     end
 
-    context "with invalid parameters" do
-      it "renders a successful response (i.e. to display the 'edit' template)" do
+    context "with invalid parameters (PATCH /update)" do
+      it "renders a successful response" do
         get posts_url
         patch post_url(test_post), params: { post: invalid_post_content}
         test_post.reload
         expect(response.status).to render_template(:edit)
       end
     end
-  end
 
-  describe "DELETE /destroy" do
-    it "destroys the requested post" do
-      post = create(:post, user: current_user)
-      expect {
-        delete post_url(post)
-      }.to change(Post, :count).by(-1)
-    end
-
-    it "redirects to the posts list" do
-      delete post_url(test_post)
-      expect(response).to redirect_to(posts_url)
+    context "when delete a post (DELETE/destroy)" do
+      it "remove a comment" do
+        post = create(:post, user: current_user)
+        expect {
+          delete post_url(post)
+        }.to change(Post, :count).by(-1)
+      end
+  
+      it "redirects to the posts list" do
+        delete post_url(test_post)
+        expect(response).to redirect_to(posts_url)
+      end
     end
   end
 end

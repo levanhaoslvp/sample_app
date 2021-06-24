@@ -14,9 +14,16 @@ RSpec.describe "Comments", type: :request do
   }
   end
 
+  let(:invalid_comment_param) do 
+    {
+      post_id: test_post.id,
+      user_id: current_user.id
+    }
+  end
+
   before { sign_in current_user}
 
-  describe 'no loggin' do
+  describe "no loggin" do
     before {sign_out current_user}
 
     it "POST /create" do
@@ -31,33 +38,42 @@ RSpec.describe "Comments", type: :request do
     end
   end
 
-  describe "POST /create" do
-    it " has a content" do
-      expect do
-        post post_comments_url(test_post), params: {comment: comment_param }
-      end.to change(Comment, :count).by(1)
+  describe " logged" do
+    context "with valid parameter (POST/create)" do
+      it "creates a new Comment" do
+        expect do
+          post post_comments_url(test_post), params: {comment: comment_param }
+        end.to change(Comment, :count).by(1)
+      end
+
+      it "render to the created comment" do
+        post post_comments_url(test_post),
+          params: {comment: comment_param}, xhr: true
+        expect(response).to render_template('comments/create')
+      end
     end
 
-    it "render to the created comment" do
-      post post_comments_url(test_post),
-        params: {comment: comment_param}, xhr: true
-      expect(response).to render_template('comments/create')
+    context "with invalid parameter (POST/create)" do
+      it "does not creates a new Comment" do
+        expect do
+          post post_comments_url(test_post), params: {comment: invalid_comment_param }
+        end.to change(Comment, :count).by(0)
+      end
     end
-  end
 
-  describe "DELETE /destroy" do
+    context "with valid parameter (DELETE /destroy)" do
+      it "delete a comment" do
+        comment = create(:comment, user_id: current_user.id, post_id: test_post.id)
+        expect {
+          delete comment_url(comment), xhr: true
+        }.to change(Comment, :count).by(-1) 
+      end
 
-    it "delete a comment" do
-      comment = create(:comment, user_id: current_user.id, post_id: test_post.id)
-      expect {
+      it "renders a successful response" do
+        comment = create(:comment, user_id: current_user.id, post_id: test_post.id)
         delete comment_url(comment), xhr: true
-      }.to change(Comment, :count).by(-1) 
-    end
-
-    it "remove comment" do
-      comment = create(:comment, user_id: current_user.id, post_id: test_post.id)
-      delete comment_url(comment), xhr: true
-      expect(response).to be_successful
+        expect(response).to be_successful
+      end
     end
   end
 end
