@@ -10,7 +10,7 @@ class CommentsController < ApplicationController
         format.js
         format.html{redirect_back fallback_location: root_path}
       else
-        format.html{render @comment}
+        format.html{render html: "does not create comment !"}
       end
     end
   end
