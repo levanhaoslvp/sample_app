@@ -6,6 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :omniauthable,
          :confirmable, omniauth_providers: %i(google_oauth2 facebook)
+  acts_as_voter
 
   has_many :providers, dependent: :destroy
   has_many :posts, dependent: :destroy

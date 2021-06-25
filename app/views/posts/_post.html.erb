@@ -7,8 +7,9 @@
   <span class="timestamp"> Posted <%= time_ago_in_words(post.created_at) %> ago.
     <td><%= link_to "Show", post %></td>
     <% if current_user == post.user %>
-    <%= button_to "Destroy", post, method: :delete, data: { confirm: "Are you sure?" } %>
+    <%= link_to "delete", post, method: :delete, data: { confirm: "Are you sure?" } %>
     <% end %></br>
+    <%= render "posts/vote_form", post: post %>
     Comments:</br>
     <div class="row">
       <%= render "comments/comment_form", post: post, parent_id: nil, comment_new: Comment.new %>
