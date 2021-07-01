@@ -243,7 +243,7 @@ input {
 
 /* microposts */
 
-.microposts {
+.posts {
     list-style: none;
     padding: 0;
     li {
@@ -286,4 +286,12 @@ span.image {
     input {
         border: 0;
     }
+}
+
+.replies {
+    margin-left: 50px;
+}
+
+.replies .replies {
+    margin-left: 50px;
 }

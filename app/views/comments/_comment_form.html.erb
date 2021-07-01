@@ -1,0 +1,11 @@
+<% if user_signed_in? %>
+  <span id="form-comment">
+    <%= form_with(model: [post, comment_new], local: false) do |f| %>
+      <%= f.hidden_field :parent_id, value: parent_id %>
+      <%= f.hidden_field :post_id, value: post.id %>
+      <%= f.hidden_field :user_id, value: current_user.id %>
+      <%= f.text_area :content, placeholder: t("posts.show.compose"), required: true, class: "form-control add-comment" %>
+      <%= f.submit "comment" %>
+    <% end %>
+  </span>
+<% end %>

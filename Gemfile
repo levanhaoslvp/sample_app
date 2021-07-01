@@ -7,6 +7,7 @@ ruby "3.0.1"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem "active_storage_validations"
+gem "acts_as_votable"
 gem "bcrypt"
 gem "bootstrap-sass"
 gem "bootstrap-will_paginate"
@@ -46,10 +47,16 @@ gem "omniauth-facebook"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 
+# gem comment post
+gem "closure_tree"
+gem "private_pub"
+
 group :development, :test do
   gem "byebug", platforms: %i(mri mingw x64_mingw)
+  gem "factory_bot_rails"
   gem "mysql2", "~>0.5.3"
   gem "rspec-rails"
+  gem "shoulda-matchers"
 end
 
 group :development do
@@ -63,6 +70,7 @@ end
 
 group :test do
   gem "capybara", ">= 3.26"
+  gem "database_cleaner-active_record"
   gem "minitest"
   gem "minitest-reporters"
   gem "rails-controller-testing"
