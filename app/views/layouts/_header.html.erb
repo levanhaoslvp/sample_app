@@ -10,6 +10,9 @@
           <li><%= link_to "Profile", "#" %></li>
           <li><%= link_to "Settings", edit_user_registration_path %></li>
           <li>
+            <%= link_to t(".link_export"), export_index_path(format: :csv, user_id: current_user.id) %>
+          </li>
+          <li>
             <%= gravatar_for current_user, size: 50 %>
             <%= button_to "Log out", destroy_user_session_path, :method => :delete %>
           </li>

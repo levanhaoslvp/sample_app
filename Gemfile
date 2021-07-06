@@ -11,6 +11,11 @@ gem "acts_as_votable"
 gem "bcrypt"
 gem "bootstrap-sass"
 gem "bootstrap-will_paginate"
+
+# Export csv,download zip file
+gem "csv"
+gem "rubyzip"
+
 gem "faker"
 gem "image_processing"
 gem "mini_magick"
@@ -76,6 +81,7 @@ group :test do
   gem "rails-controller-testing"
   gem "rexml", "~>3.2.3"
   gem "selenium-webdriver"
+  gem "simplecov", require: false
   gem "webdrivers"
 end
 
