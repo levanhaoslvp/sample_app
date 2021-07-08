@@ -23,7 +23,8 @@ class User < ApplicationRecord
   has_many :followers, through: :passive_relationships,
                                   source: :follower
 
-  # Ex:- scope :active, lambda {where(:active => true)}
+  CSV_ATT = %w(name created_at).freeze
+
   def self.from_omniauth auth
     where(email: auth.info.email).first_or_create do |user|
       user.email = auth.info.email

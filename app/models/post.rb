@@ -6,6 +6,8 @@ class Post < ApplicationRecord
   validates :user, presence: true
   acts_as_votable
 
+  CSV_ATT = %w(content created_at).freeze
+
   scope :a_month_ago,
-        ->{where("created_at > ?", 1.month.ago)}
+        ->{where("created_at > ?", 1.month.ago).select(:content, :created_at)}
 end

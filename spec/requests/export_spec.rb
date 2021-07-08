@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Exports", type: :request do
-  let(:current_user){ create(:user)}
+  let(:current_user) { create(:user)}
+  let(:follow) {create(:user, name: follow)}
+  let(:test_post){ create(:post, user: current_user)}
 
   before {sign_in current_user}
 
