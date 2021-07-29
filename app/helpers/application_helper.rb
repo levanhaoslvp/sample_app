@@ -12,7 +12,7 @@ module ApplicationHelper
 
   def gravatar_for user, options = {size: 30}
     size = options[:size]
-    prov = session["provider"]
+    prov = session["provider"] if user == current_user
     gravatar_id = Digest::MD5.hexdigest(user.email.downcase)
     auth_avt = user.providers.find_by(provider: prov).avatar if prov
     gravatar_url = auth_avt || "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"

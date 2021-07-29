@@ -1,0 +1,9 @@
+<div class="notifications-item">
+  <%= link_to notification.notifiable.post do %>
+    <div class="text">
+      <%= gravatar_for notification.user, size: 30 %>
+      <h4><%= notification.user.email %></h4>
+      <p><%= notification.action %> comment your <%= notification.notifiable_type %></p>
+    </div>
+  <% end %>
+</div>

@@ -5,12 +5,14 @@
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to "Home", root_path %></li>
         <li><%= link_to "Help", "#" %></li>
-        <% if user_signed_in? %>
-          <li><%= link_to "Users", "#" %></li>         
+        <% if user_signed_in? %>         
           <li><%= link_to "Profile", "#" %></li>
           <li><%= link_to "Settings", edit_user_registration_path %></li>
           <li>
             <%= link_to t(".link_export"), export_index_path(format: :csv, user_id: current_user.id) %>
+          </li>
+          <li class="nav-item dropdown" id="noti_side" >
+            <%= render "notifications/notification_center", notifications: notifications_of(current_user) %>
           </li>
           <li>
             <%= gravatar_for current_user, size: 50 %>

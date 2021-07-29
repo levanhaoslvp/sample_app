@@ -7,6 +7,7 @@ class CommentsController < ApplicationController
   def create
     respond_to do |format|
       if @comment.save
+        create_notification
         format.js
         format.html{redirect_back fallback_location: root_path}
       else
@@ -43,5 +44,15 @@ class CommentsController < ApplicationController
     else
       @comment = Comment.new comment_params
     end
+  end
+
+  def create_notification
+    object = @comment.parent || @comment.post
+    Notification.create(
+      recipient: object.user,
+      user: current_user,
+      action: "comment", viewed: false, notifiable: @comment,
+      post_id: @comment.post_id, comment_id: @comment_id
+    )
   end
 end
