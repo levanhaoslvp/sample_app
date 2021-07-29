@@ -18,13 +18,13 @@ RSpec.describe "Notifications", type: :request do
 
   describe " logged " do
     it "renders a successful response when POST /create" do
-      post notifications_path(id: current_user.id), xhr: true
+      post notifications_path(id: current_user.id)
       expect(response).to be_successful
     end
 
     it "set viewed for Notification" do
       noti_new = create(:notification, user: other_user, recipient: current_user, notifiable: test_post, viewed: false)
-      post notifications_path(id: current_user.id), xhr: true
+      post notifications_path(id: current_user.id)
       expect(noti_new.reload.viewed).to eq(true)
     end
   end
