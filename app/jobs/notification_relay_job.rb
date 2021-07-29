@@ -8,9 +8,10 @@ class NotificationRelayJob < ApplicationJob
   end
 
   private
+
   def render_noti noti
     ApplicationController.render_with_signed_in_user(
-      noti.user,
+      noti.recipient,
       partial: "notifications/#{noti.action}",
       locals: {notification: noti},
       formats: [:html]
@@ -18,7 +19,8 @@ class NotificationRelayJob < ApplicationJob
   end
 
   def render_counter count, noti
-    ApplicationController.render(
+    ApplicationController.render_with_signed_in_user(
+      noti.recipient,
       partial: "notifications/counter",
       locals: {recipient: noti.recipient, counter: count},
       formats: [:html]
