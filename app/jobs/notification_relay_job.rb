@@ -13,7 +13,7 @@ class NotificationRelayJob < ApplicationJob
     ApplicationController.render_with_signed_in_user(
       noti.recipient,
       partial: "notifications/#{noti.action}",
-      locals: {notification: noti},
+      locals: {notification: noti, user_recipient: noti.recipient},
       formats: [:html]
     )
   end
