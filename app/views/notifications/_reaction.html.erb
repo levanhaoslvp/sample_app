@@ -1,5 +1,5 @@
 <div class="notifications-item">
-  <%= link_to notification.notifiable.post do %>
+  <%= link_to notification.notifiable do %>
     <div class="text">
       <%= gravatar_for notification.user, size: 30 %>
       <h4><%= notification.user.email %></h4>
