@@ -1,9 +1,8 @@
 <ul class="notificator">
-  <%= link_to(notifications_path(id: user_recipient.id), remote: true, method: :post) do %>
+  
     <li id="open_notification">
       <%= render partial: "notifications/counter", locals: { counter: notifications_new(current_user).count } %>
     </li>
-  <% end %>
   <div id="box" class="notifications">
       <ul id="notifications">
         <%= render partial: "notifications/notification", collection: notifications, as: :notification %>
