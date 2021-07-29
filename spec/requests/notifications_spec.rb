@@ -11,20 +11,20 @@ RSpec.describe "Notifications", type: :request do
     before {sign_out current_user}
 
     it "redirect to sign-in when POST /create" do
-      post notifications_path(id: current_user.id)
+      post notifications_url(id: current_user.id)
       expect(response).to redirect_to(new_user_session_url)
     end
   end
 
   describe " logged " do
     it "renders a successful response when POST /create" do
-      post notifications_path(id: current_user.id)
+      post notifications_url(id: current_user.id), xhr: true
       expect(response).to be_successful
     end
 
     it "set viewed for Notification" do
       noti_new = create(:notification, user: other_user, recipient: current_user, notifiable: test_post, viewed: false)
-      post notifications_path(id: current_user.id)
+      post notifications_url(id: current_user.id)
       expect(noti_new.reload.viewed).to eq(true)
     end
   end
