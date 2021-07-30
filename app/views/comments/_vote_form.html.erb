@@ -1,5 +1,6 @@
 <div id="vote_form-comment<%= comment.id %>">
   <% if user_signed_in? %>
+  <p><%= current_user.id %></p>
     <% if (current_user.voted_down_on? comment) || (!ActsAsVotable::Vote.where(voter_id: current_user, votable_id: comment.id).present?) %>
       <%= link_to comment_votes_path(comment), method: :post, remote: true do %>
         <span class="glyphicon glyphicon-heart-empty"></span>
