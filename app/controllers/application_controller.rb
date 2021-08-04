@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include SessionHelper
   protect_from_forgery with: :exception
 
   def self.render_with_signed_in_user user, *args
