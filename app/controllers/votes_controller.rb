@@ -5,6 +5,7 @@ class VotesController < ApplicationController
 
   def create
     @status.liked_by current_user
+    create_notification
     res_reaction
   end
 
@@ -30,5 +31,13 @@ class VotesController < ApplicationController
         format.js{render :vote_comment}
       end
     end
+  end
+
+  def create_notification
+    Notification.create(
+      recipient: @status.user, user: current_user,
+      action: "reaction", viewed: false, notifiable: @status,
+      post_id: @status.id, comment_id: @status.id
+    )
   end
 end

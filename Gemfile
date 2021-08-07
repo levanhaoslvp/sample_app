@@ -11,6 +11,11 @@ gem "acts_as_votable"
 gem "bcrypt"
 gem "bootstrap-sass"
 gem "bootstrap-will_paginate"
+
+# Export csv,download zip file
+gem "csv"
+gem "rubyzip"
+
 gem "faker"
 gem "image_processing"
 gem "mini_magick"
@@ -23,7 +28,7 @@ gem "sass-rails", ">= 6"
 gem "turbolinks", "~> 5"
 gem "webpacker", "~> 5.0"
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -52,6 +57,7 @@ gem "closure_tree"
 gem "private_pub"
 
 group :development, :test do
+  gem "action-cable-testing"
   gem "byebug", platforms: %i(mri mingw x64_mingw)
   gem "factory_bot_rails"
   gem "mysql2", "~>0.5.3"
@@ -76,6 +82,7 @@ group :test do
   gem "rails-controller-testing"
   gem "rexml", "~>3.2.3"
   gem "selenium-webdriver"
+  gem "simplecov", require: false
   gem "webdrivers"
 end
 
