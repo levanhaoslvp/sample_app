@@ -1,0 +1,28 @@
+<ul class="notificator">
+  <%= link_to(notifications_path(id: current_user.id), remote: true, method: :post) do %>
+    <li id="open_notification">
+      <%= render partial: "notifications/counter", locals: { counter: Notification.get_new(current_user).count } %>
+    </li>
+  <% end %>
+  <div id="box" class="notifications">
+      <ul id="notifications">
+        <%= render partial: "notifications/notification", collection: notifications, as: :notification %>
+      </ul>
+  </div>
+</ul>
+
+<script>
+  var down = false;
+  $('#open_notification').click(function(e){
+  var color = $(this).text();
+  if(down){
+    $('#box').css('height','0px');
+    $('#box').css('opacity','0');
+    down = false;
+  }else{
+    $('#box').css('height','auto');
+    $('#box').css('opacity','1');
+    down = true;
+  }
+});
+</script>

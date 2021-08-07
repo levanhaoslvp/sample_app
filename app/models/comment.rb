@@ -1,7 +1,7 @@
 class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :post
-
+  has_many :notifications, as: :notifiable
   validates :user, presence: true
   validates :content, presence: true
   validates :post, presence: true
