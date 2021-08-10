@@ -8,13 +8,13 @@ Style/Alias:
   Description: "Use alias_method instead of alias."
   Enabled: true
 
-Layout/HashAlignment:
+Layout/AlignHash:
   Description: >-
                  Align the elements of a hash literal if they span more than
                  one line.
   Enabled: true
 
-Layout/ParameterAlignment:
+Layout/AlignParameters:
   Description: >-
                  Align the parameters of a method call if they span more
                  than one line.
@@ -44,22 +44,13 @@ Style/BeginBlock:
   Description: "Avoid the use of BEGIN blocks."
   Enabled: true
 
-Style/BlockComments:
-  Description: "Do not use block comments."
-  Enabled: true
-
 Metrics/BlockNesting:
   Description: "Avoid excessive block nesting"
   Enabled: true
 
-Style/BlockDelimiters:
-  Description: >-
-                Avoid using {...} for multi-line blocks (multiline chaining is
-                always ugly).
-                Prefer {...} over do...end for single-line blocks.
+Style/BracesAroundHashParameters:
+  Description: "Enforce braces style inside hash parameters."
   Enabled: true
-
-
 
 Style/CaseEquality:
   Description: "Avoid explicit use of the case equality operator(===)."
@@ -131,10 +122,6 @@ Layout/DotPosition:
   Description: "Checks the position of the dot in multi-line method calls."
   Enabled: true
 
-Style/DoubleNegation:
-  Description: "Checks for uses of double negation (!!)."
-  Enabled: true
-
 Style/EachWithObject:
   Description: "Prefer `each_with_object` over `inject` or `reduce`."
   Enabled: true
@@ -165,10 +152,6 @@ Layout/EmptyLinesAroundModuleBody:
 
 Style/EmptyLiteral:
   Description: "Prefer literals to Array.new/Hash.new/String.new."
-  Enabled: true
-
-Style/Encoding:
-  Description: "Use UTF-8 as the source file encoding."
   Enabled: true
 
 Style/EndBlock:
@@ -231,18 +214,14 @@ Layout/IndentationWidth:
   Description: "Use 2 spaces for indentation."
   Enabled: true
 
-Layout/FirstArrayElementIndentation:
+Layout/IndentFirstArrayElement:
   Description: >-
                  Checks the indentation of the first element in an array
                  literal.
   Enabled: true
 
-Layout/FirstHashElementIndentation:
+Layout/IndentFirstHashElement:
   Description: "Checks the indentation of the first key in a hash literal."
-  Enabled: true
-
-Style/Lambda:
-  Description: "Use the new lambda literal syntax for single-line blocks."
   Enabled: true
 
 Style/LambdaCall:
@@ -258,7 +237,8 @@ Style/LineEndConcatenation:
                  Use \ instead of + or << to concatenate two string literals at
                  line end.
   Enabled: true
-  Layout/LineLength:
+
+Metrics/LineLength:
   Description: "Limit lines to 80 characters."
   Enabled: true
 
@@ -278,10 +258,6 @@ Naming/MethodName:
 
 Style/ModuleFunction:
   Description: "Checks for usage of `extend self` in modules."
-  Enabled: true
-
-Style/MultilineBlockChain:
-  Description: "Avoid multi-line chains of blocks."
   Enabled: true
 
 Style/MultilineIfThen:
@@ -378,22 +354,6 @@ Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   Enabled: true
 
-Style/RedundantSelf:
-  Description: "Don't use self where it's not needed."
-  Enabled: true
-
-Style/RegexpLiteral:
-  Description: >-
-                 Use %r for regular expressions matching more than
-                 `MaxSlashes` '/' characters.
-                 Use %r only for regular expressions matching more than
-                 `MaxSlashes` '/' character.
-  Enabled: true
-
-Style/RescueModifier:
-  Description: "Avoid using rescue in its modifier form."
-  Enabled: true
-
 Style/SelfAssignment:
   Description: "Checks for places where self-assignment shorthand should have been used."
   Enabled: true
@@ -426,10 +386,6 @@ Layout/SpaceAfterColon:
 
 Layout/SpaceAfterComma:
   Description: "Use spaces after commas."
-  Enabled: true
-
-Layout/SpaceAroundKeyword:
-  Description: "Use spaces after if/elsif/unless/while/until/case/when."
   Enabled: true
 
 Layout/SpaceAfterMethodName:
@@ -484,10 +440,6 @@ Layout/SpaceAroundOperators:
   Description: "Use spaces around operators."
   Enabled: true
 
-Layout/SpaceInsideHashLiteralBraces:
-  Description: "Use spaces inside hash literal braces - or don't."
-  Enabled: true
-
 Layout/SpaceInsideParens:
   Description: "No spaces after ( or before )."
   Enabled: true
@@ -500,26 +452,16 @@ Style/StringLiterals:
   Description: "Checks if uses of quotes match the configured preference."
   Enabled: true
 
-Layout/IndentationStyle:
+Layout/Tab:
   Description: "No hard tabs."
   Enabled: true
 
-Layout/TrailingEmptyLines:
+Layout/TrailingBlankLines:
   Description: "Checks trailing blank lines and final newline."
   Enabled: true
 
-Style/TrailingCommaInArguments:
-  Description: 'Checks for trailing comma in argument lists.'
-  StyleGuide: '#no-trailing-params-comma'
-  Enabled: true
-
 Style/TrailingCommaInArrayLiteral:
-  Description: 'Checks for trailing comma in array literals.'
-  StyleGuide: '#no-trailing-array-commas'
-  Enabled: true
-
-Style/TrailingCommaInHashLiteral:
-  Description: 'Checks for trailing comma in hash literals.'
+  Description: "Checks for trailing comma in parameter lists and literals."
   Enabled: true
 
 Layout/TrailingWhitespace:
@@ -536,7 +478,7 @@ Style/UnlessElse:
                  case first.
   Enabled: true
 
-Style/RedundantCapitalW:
+Style/UnneededCapitalW:
   Description: "Checks for %W when interpolation is not needed."
   Enabled: true
 
@@ -619,11 +561,7 @@ Lint/EmptyInterpolation:
   Description: "Checks for empty string interpolation."
   Enabled: true
 
-Layout/EndAlignment:
-  Description: "Align ends correctly."
-  Enabled: true
-
-Style/EndBlock:
+Lint/EndInMethod:
   Description: "END blocks should not be placed inside method definitions."
   Enabled: true
 
@@ -635,8 +573,12 @@ Security/Eval:
   Description: "The use of eval represents a serious security risk."
   Enabled: true
 
-Lint/SuppressedException:
+Lint/HandleExceptions:
   Description: "Don't suppress exception."
+  Enabled: true
+
+Lint/LiteralAsCondition:
+  Description: "Checks of literals used in conditions."
   Enabled: true
 
 Lint/LiteralInInterpolation:
@@ -671,7 +613,7 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Lint/RedundantStringCoercion:
+Lint/StringConversionInInterpolation:
   Description: "Checks for Object#to_s usage in string interpolation."
   Enabled: true
 
@@ -699,7 +641,7 @@ Lint/UselessAssignment:
   Description: "Checks for useless assignment to a local variable."
   Enabled: true
 
-Lint/BinaryOperatorWithIdenticalOperands:
+Lint/UselessComparison:
   Description: "Checks for comparison of something with itself."
   Enabled: true
 

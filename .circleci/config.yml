@@ -70,8 +70,10 @@ jobs:
       - run:
           name: Rubocop
           command: |
-            bundle exec rubocop -A
-            bundle exec rubocop
+            rubocop ./app/controllers
+            rubocop ./app/models
+            rubocop ./app/helpers
+            rubocop ./app/services
 
   test:
     executor: default

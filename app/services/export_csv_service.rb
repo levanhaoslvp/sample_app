@@ -1,6 +1,10 @@
-require "csv"
+# frozen_string_literal: true
+
+require 'csv'
+
+# ExportCsvService
 class ExportCsvService
-  def initialize object, attribute
+  def initialize(object, attribute)
     @attributes = attribute
     @objects = object
     @header = attribute
@@ -10,11 +14,12 @@ class ExportCsvService
     CSV.generate do |csv|
       csv << header
       objects.each do |object|
-        csv << attributes.map{|attribute| object.public_send(attribute)}
+        csv << attributes.map { |attribute| object.public_send(attribute) }
       end
     end
   end
 
   private
+
   attr_reader :attributes, :objects, :header
 end

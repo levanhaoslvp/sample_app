@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
+# app/controllers/CommentsController
 class CommentsController < ApplicationController
-  skip_before_action :verify_authenticity_token
   before_action :authenticate_user!
+  #load_and_authorize_resource
   before_action :set_comment, only: [:destroy]
   before_action :filter_comment, only: [:create]
 
@@ -9,9 +12,9 @@ class CommentsController < ApplicationController
       if @comment.save
         create_notification
         format.js
-        format.html{redirect_back fallback_location: root_path}
+        format.html { redirect_back fallback_location: root_path }
       else
-        format.html{render html: "does not create comment !"}
+        format.html { render html: 'does not create comment !' }
       end
     end
   end
@@ -23,12 +26,13 @@ class CommentsController < ApplicationController
       if @comment.save
         format.js
       else
-        format.html{redirect_back fallback_location: root_path}
+        format.html { redirect_back fallback_location: root_path }
       end
     end
   end
 
   private
+
   def comment_params
     params.require(:comment).permit :post_id, :user_id, :content
   end
@@ -51,7 +55,7 @@ class CommentsController < ApplicationController
     Notification.create(
       recipient: object.user,
       user: current_user,
-      action: "comment", viewed: false, notifiable: @comment,
+      action: 'comment', viewed: false, notifiable: @comment,
       post_id: @comment.post_id, comment_id: @comment_id
     )
   end

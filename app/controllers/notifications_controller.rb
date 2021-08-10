@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# app/controllers/NotificationsController
 class NotificationsController < ApplicationController
   before_action :authenticate_user!
 
@@ -6,7 +9,7 @@ class NotificationsController < ApplicationController
     @notification = Notification.get_new(current_user)
     respond_to do |format|
       format.js
-      format.html{redirect_back fallback_location: root_path}
+      format.html { redirect_back fallback_location: root_path }
     end
   end
 end

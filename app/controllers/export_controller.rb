@@ -1,4 +1,8 @@
-require "zip"
+# frozen_string_literal: true
+
+require 'zip'
+
+# app/controllers/ExportController
 class ExportController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user
@@ -7,7 +11,7 @@ class ExportController < ApplicationController
     compressed_files = zip_files
     respond_to do |format|
       compressed_files.rewind
-      format.csv{send_data compressed_files.read, filename: "test.zip"}
+      format.csv { send_data compressed_files.read, filename: 'test.zip' }
       format.html {}
     end
   end

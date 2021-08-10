@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Model Comment
 class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :post
@@ -7,5 +10,5 @@ class Comment < ApplicationRecord
   validates :post, presence: true
 
   acts_as_votable
-  acts_as_tree order: "created_at ASC"
+  acts_as_tree order: 'created_at ASC'
 end
