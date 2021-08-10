@@ -3,7 +3,6 @@
 # app/controllers/CommentsController
 class CommentsController < ApplicationController
   before_action :authenticate_user!
-  #load_and_authorize_resource
   before_action :set_comment, only: [:destroy]
   before_action :filter_comment, only: [:create]
 
