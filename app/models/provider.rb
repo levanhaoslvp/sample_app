@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Model Provider
 class Provider < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# GetDataService
 class GetDataService
-  def initialize user
+  def initialize(user)
     @user = user
   end
 
@@ -16,5 +19,6 @@ class GetDataService
   end
 
   private
+
   attr_reader :user
 end

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # app/controllers/static_p_age.rb
-
 class StaticPAgeController < ApplicationController
-  def home; end
+  def home
+    @micropost = current_user.microposts.build if user_signed_in?
+  end
 
   def help; end
 

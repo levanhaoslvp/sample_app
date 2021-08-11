@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# OmniauthHelper
 module OmniauthHelper
   def check_provider(auth)
     user = User.find_by(email: auth.info.email)
