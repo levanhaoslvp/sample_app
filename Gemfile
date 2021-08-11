@@ -16,6 +16,10 @@ gem "bootstrap-will_paginate"
 gem "csv"
 gem "rubyzip"
 
+# Authorization
+gem "cancancan"
+gem "rolify"
+
 gem "faker"
 gem "image_processing"
 gem "mini_magick"

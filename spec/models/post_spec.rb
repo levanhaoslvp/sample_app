@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  
-  let(:current_user){ create(:user)}
-  
-  describe "Associations" do
+  let(:current_user) { create(:user) }
+
+  describe 'Associations' do
     it { should belong_to(:user) }
   end
 
-  describe "Validations" do
+  describe 'Validations' do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:content) }
     it { should validate_presence_of(:title) }
@@ -53,12 +54,12 @@ RSpec.describe Post, type: :model do
     post.content = '12345'
     expect(post).to be_valid
 
-    hundred_char_string = '123456789 123456789 123456789 123456789 123456789 '+
-    '123456789 123456789 123456789 123456789 123456789 '
+    hundred_char_string = '123456789 123456789 123456789 123456789 123456789 ' \
+                          '123456789 123456789 123456789 123456789 123456789 '
     post.content = hundred_char_string
     expect(post).to be_valid
 
-    post.content = hundred_char_string + '1'
+    post.content = "#{hundred_char_string}1"
     expect(post).to_not be_valid
   end
 
@@ -69,5 +70,4 @@ RSpec.describe Post, type: :model do
     post.image = 'https://vcdn-thethao.vnecdn.net/2021/06/20/1-2426-1624149210.jpg'
     expect(post).to be_valid
   end
-  
 end

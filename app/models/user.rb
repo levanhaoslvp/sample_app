@@ -2,6 +2,7 @@
 
 # Model User
 class User < ApplicationRecord
+  rolify
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :omniauthable, :trackable,
          :confirmable, omniauth_providers: %i[google_oauth2 facebook]
@@ -23,7 +24,13 @@ class User < ApplicationRecord
                        source: :follower
   has_many :notifications, as: :recipient
 
+  after_create :assign_default_role
+
   CSV_ATT = %w[name created_at].freeze
+
+  def assign_default_role
+    add_role(:client) if roles.blank?
+  end
 
   def self.from_omniauth(auth)
     where(email: auth.info.email).first_or_create do |user|
